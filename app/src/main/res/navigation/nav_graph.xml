@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    android:label="Status Player"
+    app:startDestination="@id/statusFragment">
+
+    <fragment
+        android:id="@+id/statusFragment"
+        android:name="com.inspiredcoda.whatsappstatusgrabber.ui.status.StatusFragment"
+        android:label="WhatsApp Status Grabber"
+        tools:layout="@layout/fragment_status">
+        <action
+            android:id="@+id/action_statusFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.inspiredcoda.whatsappstatusgrabber.ui.VideoPlayerFragment"
+        android:label="fragment_video_player"
+        tools:layout="@layout/fragment_video_player" />
+</navigation>

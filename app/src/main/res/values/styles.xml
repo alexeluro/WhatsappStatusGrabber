@@ -1,0 +1,26 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="toolbarStyle">@style/StatusGrabberToolBarTheme</item>
+
+
+    </style>
+
+    <style name="StatusGrabberAppBarTheme" parent="Widget.Design.AppBarLayout">
+        <item name="backgroundColor">@color/colorPrimary</item>
+        <item name="background">@color/colorPrimary</item>
+    </style>
+
+    <style name="StatusGrabberToolBarTheme" parent="Widget.AppCompat.Toolbar">
+        <item name="backgroundColor">@color/colorPrimary</item>
+        <item name="background">@color/colorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="paddingStart">35dp</item>
+    </style>
+
+</resources>
