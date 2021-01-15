@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="Refresh"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/rate_us"
+        android:icon="@drawable/ic_rate"
+        android:title="Rate Us"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about_us"
+        android:icon="@drawable/ic_about"
+        android:title="About Us"
+        app:showAsAction="never" />
+
+</menu>

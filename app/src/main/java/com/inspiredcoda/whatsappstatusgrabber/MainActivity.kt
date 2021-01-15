@@ -3,6 +3,8 @@ package com.inspiredcoda.whatsappstatusgrabber
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.READ_E
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.STORAGE_REQUEST_CODE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.WRITE_EXTERNAL_STORAGE
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.UserInterfaceListener
+import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
+    private lateinit var aboutDialog: AlertDialog
+
     lateinit var onStorageCallback: OnStoragePermissionCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,8 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
             navController.graph,
             null
         ))
+
+        createAboutDialog()
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
@@ -101,38 +108,6 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
                 WRITE_EXTERNAL_STORAGE
             )
 //        }
-
-//        Dexter.withContext(this)
-//            .withPermissions(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
-//            .withListener(object : MultiplePermissionsListener {
-//
-//                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-//                    if (p0?.areAllPermissionsGranted()!!){
-//                        toast("ALL PERMISSIONS GRANTED")
-//                    }
-//
-//                    for (x in p0.deniedPermissionResponses){
-//                        if (x.isPermanentlyDenied){
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                shouldShowRequestPermissionRationale(x.permissionName)
-//                            }else{
-//                                // show permission rationale for other android versions
-//                            }
-//                        }else{
-//
-//                        }
-//                    }
-//                }
-//
-//                override fun onPermissionRationaleShouldBeShown(
-//                    p0: MutableList<PermissionRequest>?,
-//                    p1: PermissionToken?
-//                ) {
-//                    p1?.continuePermissionRequest()
-//                }
-//
-//            })
-//            .check()
 
     }
 
@@ -215,6 +190,39 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
             }
         }
 
+    }
+
+    private fun createAboutDialog(){
+        aboutDialog = AlertDialog.Builder(this)
+            .setView(R.layout.custom_about_layout)
+            .setCancelable(true)
+            .create()
+    }
+
+    private fun displayAboutDialog(){
+        aboutDialog.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.refresh -> {
+                initiateStatusSearch()
+            }
+
+            R.id.rate_us -> {
+                toast("still in progress...")
+            }
+
+            R.id.about_us -> {
+                displayAboutDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
