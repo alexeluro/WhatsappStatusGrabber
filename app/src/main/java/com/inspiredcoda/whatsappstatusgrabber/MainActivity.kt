@@ -3,18 +3,12 @@ package com.inspiredcoda.whatsappstatusgrabber
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.tabs.TabLayout
-import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewPagerAdapter
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.OnStoragePermissionCallback
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusGrabberInterface
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions
@@ -23,9 +17,11 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.STORAG
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.WRITE_EXTERNAL_STORAGE
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.UserInterfaceListener
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
+import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
 
 class MainActivity : AppCompatActivity(), StatusGrabberInterface,
     EasyPermissions.PermissionCallbacks, UserInterfaceListener {
@@ -52,9 +48,33 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        initiateStatusSearch()
 //        requestStoragePermission()
 
 
+    }
+
+    private fun initiateStatusSearch(){
+        val path = StorageUtil.getStorageDirectories(this)
+        initiateViewedStatusSearch(path)
+        initiateSavedStatusSearch(path)
+
+    }
+
+    private fun initiateViewedStatusSearch(path: Array<String>){
+        var file: File? = null
+        for (x in path){
+            file = File("$x/WhatsApp/Media/.Statuses")
+        }
+        mainViewModel.loadViewedStatuses(file!!)
+    }
+
+    private fun initiateSavedStatusSearch(path: Array<String>){
+        var file: File? = null
+        for (x in path){
+            file = File("$x/WhatsApp Status Grabber")
+        }
+        mainViewModel.loadSavedStatuses(file!!)
     }
 
     override fun showActionBar(status: Boolean) {

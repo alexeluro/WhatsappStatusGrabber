@@ -11,20 +11,18 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.SavedStatusAdapter
-import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewedStatusAdapter
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.FileCategory.SAVED_STATUS
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusMediaInterface
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.fragment_saved_status.*
 import kotlinx.android.synthetic.main.fragment_viewed_status.*
-import kotlinx.android.synthetic.main.fragment_viewed_status.status_available
-import kotlinx.android.synthetic.main.fragment_viewed_status.viewed_status_progress_bar
 import java.io.File
 
 /**
@@ -57,17 +55,24 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
 
         initRecyclerView(mAdapter)
 
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+
         observers()
+
 
         val path = StorageUtil.getStorageDirectories(requireContext())
 
-        for (x in path) {
-//            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
-            file = File("$x/WhatsAppStatusGrabber/")
-
-            mainViewModel.loadDirectoryFiles(file!!, SAVED_STATUS)
-
-        }
+//        for (x in path) {
+////            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
+//            file = File("$x/WhatsApp Status Grabber/")
+//
+//            mainViewModel.loadSavedStatuses(file!!)
+//
+//        }
 
     }
 
@@ -77,7 +82,7 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                 Constants.ResultState.LOADING.name -> {
                     requireContext().toast("LOADING...")
                     Log.d(
-                        "ViewedStatusFragment", "File Path: ${file?.path!!}\nTotal files found: " +
+                        "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
                     saved_status_progress_bar.visibility = View.VISIBLE
@@ -86,7 +91,7 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                 Constants.ResultState.SUCCESS.name -> {
                     requireContext().toast("SUCCESS...\n${state.message}")
                     Log.d(
-                        "ViewedStatusFragment", "File Path: ${file?.path!!}\nTotal files found: " +
+                        "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
                     saved_status_progress_bar.visibility = View.GONE
@@ -100,7 +105,7 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
             }
         }
 
-        mainViewModel.directoryFiles.observe(viewLifecycleOwner) {
+        mainViewModel.directorySavedStatusFiles.observe(viewLifecycleOwner) {
             Log.d("ViewedStatusFragment", "MutableList<File> size: ${it.size}")
 
             if (!it.isNullOrEmpty()) {
@@ -115,9 +120,13 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
     }
 
     private fun initRecyclerView(filesAdapter: SavedStatusAdapter) {
-        viewed_status_recycler_view?.apply {
+        saved_status_recycler_view?.apply {
             adapter = filesAdapter
-            layoutManager = GridLayoutManager(this.context, 3)
+            layoutManager = if(resources.configuration.orientation == LinearLayoutManager.VERTICAL) {
+                GridLayoutManager(this.context, 3)
+            }else{
+                GridLayoutManager(this.context, 4)
+            }
         }
     }
 

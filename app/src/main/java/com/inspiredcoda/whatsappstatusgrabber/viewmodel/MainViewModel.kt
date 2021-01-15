@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.FileCategory.SAVED_STATUS
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.FileCategory.VIEWED_STATUS
 import com.inspiredcoda.whatsappstatusgrabber.utils.ResultState
 import kotlinx.coroutines.launch
 import java.io.File
@@ -20,40 +18,42 @@ class MainViewModel : ViewModel() {
     val loadingState: LiveData<ResultState>
         get() = _loadingState
 
-    private var _directoryFiles = MutableLiveData<MutableList<File>>()
-    val directoryFiles: LiveData<MutableList<File>>
-        get() = _directoryFiles
+    private var _directoryViewedStatusFiles = MutableLiveData<MutableList<File>>()
+    val directoryViewedStatusFiles: LiveData<MutableList<File>>
+        get() = _directoryViewedStatusFiles
 
-    fun loadDirectoryFiles(directory: File, fileCat: Int) {
+    private var _directorySavedStatusFiles = MutableLiveData<MutableList<File>>()
+    val directorySavedStatusFiles: LiveData<MutableList<File>>
+        get() = _directorySavedStatusFiles
+
+
+    fun loadViewedStatuses(directory: File) {
         viewModelScope.launch {
             _loadingState.value = ResultState(Constants.ResultState.LOADING.name, null)
-            val allFiles = directory.listFiles()
-            when (fileCat) {
-                VIEWED_STATUS -> {
-                    getViewedStatuses(directory)
-                }
-
-                SAVED_STATUS -> {
-                    getSavedStatuses(directory)
-                }
-            }
-
-
+            getViewedStatuses(directory)
         }
 
     }
+
+    fun loadSavedStatuses(directory: File) {
+        viewModelScope.launch {
+            _loadingState.value = ResultState(Constants.ResultState.LOADING.name, null)
+            getSavedStatuses(directory)
+        }
+    }
+
 
     private fun getViewedStatuses(directory: File) {
         listOfViewedStatuses.clear()
         if (!directory.listFiles().isNullOrEmpty()) {
             for (x in directory.listFiles()!!) {
                 if (x.isDirectory) {
-                    loadDirectoryFiles(directory, VIEWED_STATUS)
+                    loadViewedStatuses(directory)
                     _loadingState.value =
-                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.path}")
+                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.absolutePath}")
                 } else {
                     _loadingState.value =
-                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.path}")
+                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.absolutePath}")
                     val fileName = x.name.toLowerCase()
                     for (y in Constants.VideoConstant.extentions) {
                         if (fileName.endsWith(y, true)) {
@@ -67,9 +67,9 @@ class MainViewModel : ViewModel() {
 
             _loadingState.value = ResultState(
                 Constants.ResultState.SUCCESS.name,
-                "Total files found from ${directory.canonicalPath}: ${listOfViewedStatuses.size}"
+                "Total files found in ${directory.canonicalPath}: ${listOfViewedStatuses.size}"
             )
-            _directoryFiles.postValue(listOfViewedStatuses)
+            _directoryViewedStatusFiles.postValue(listOfViewedStatuses)
         } else {
             _loadingState.value =
                 ResultState(Constants.ResultState.SUCCESS.name, "Nothing found here!")
@@ -81,12 +81,12 @@ class MainViewModel : ViewModel() {
         if (!directory.listFiles().isNullOrEmpty()) {
             for (x in directory.listFiles()!!) {
                 if (x.isDirectory) {
-                    loadDirectoryFiles(directory, SAVED_STATUS)
+                    loadSavedStatuses(directory)
                     _loadingState.value =
-                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.path}")
+                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.absolutePath}")
                 } else {
                     _loadingState.value =
-                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.path}")
+                        ResultState(Constants.ResultState.LOADING.name, "Path found: ${x.absolutePath}")
                     val fileName = x.name.toLowerCase()
                     for (y in Constants.VideoConstant.extentions) {
                         if (fileName.endsWith(y, true)) {
@@ -100,9 +100,9 @@ class MainViewModel : ViewModel() {
 
             _loadingState.value = ResultState(
                 Constants.ResultState.SUCCESS.name,
-                "Total files found from ${directory.canonicalPath}: ${listOfViewedStatuses.size}"
+                "Total files found in ${directory.canonicalPath}: ${listOfSavedStatuses.size}"
             )
-            _directoryFiles.postValue(listOfViewedStatuses)
+            _directorySavedStatusFiles.postValue(listOfSavedStatuses)
         } else {
             _loadingState.value =
                 ResultState(Constants.ResultState.SUCCESS.name, "Nothing found here!")

@@ -11,12 +11,11 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewedStatusAdapter
-import com.inspiredcoda.whatsappstatusgrabber.ui.VideoPlayerFragment
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.FileCategory.VIEWED_STATUS
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE_NAME
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_URI
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.OnStoragePermissionCallback
@@ -75,13 +74,13 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 
         val path = StorageUtil.getStorageDirectories(requireContext())
 
-        for (x in path) {
-//            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
-            file = File("$x/WhatsApp/Media/.Statuses")
-
-            mainViewModel.loadDirectoryFiles(file!!, VIEWED_STATUS)
-
-        }
+//        for (x in path) {
+////            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
+//            file = File("$x/WhatsApp/Media/.Statuses")
+//
+//            mainViewModel.loadViewedStatuses(file!!)
+//
+//        }
 
 
     }
@@ -92,7 +91,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                 Constants.ResultState.LOADING.name -> {
                     requireContext().toast("LOADING...")
                     Log.d(
-                        "ViewedStatusFragment", "File Path: ${file?.path!!}\nTotal files found: " +
+                        "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
                     viewed_status_progress_bar.visibility = View.VISIBLE
@@ -101,7 +100,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                 Constants.ResultState.SUCCESS.name -> {
                     requireContext().toast("SUCCESS...\n${state.message}")
                     Log.d(
-                        "ViewedStatusFragment", "File Path: ${file?.path!!}\nTotal files found: " +
+                        "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
                     viewed_status_progress_bar.visibility = View.GONE
@@ -115,7 +114,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
             }
         }
 
-        mainViewModel.directoryFiles.observe(this) {
+        mainViewModel.directoryViewedStatusFiles.observe(this) {
             Log.d("ViewedStatusFragment", "MutableList<File> size: ${it.size}")
 
             if (!it.isNullOrEmpty()) {
@@ -132,7 +131,11 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
     private fun initRecyclerView(filesAdapter: ViewedStatusAdapter) {
         viewed_status_recycler_view?.apply {
             adapter = filesAdapter
-            layoutManager = GridLayoutManager(this.context, 3)
+            layoutManager = if(resources.configuration.orientation == LinearLayoutManager.VERTICAL) {
+                GridLayoutManager(this.context, 3)
+            }else{
+                GridLayoutManager(this.context, 5)
+            }
         }
     }
 
