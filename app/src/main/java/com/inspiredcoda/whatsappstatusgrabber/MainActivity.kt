@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusGrabberInter
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.READ_EXTERNAL_STORAGE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.STORAGE_REQUEST_CODE
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.WRITE_EXTERNAL_STORAGE
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.UserInterfaceListener
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -59,10 +61,12 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
         if (status){
             supportActionBar?.show()
             main_app_bar.setExpanded(status)
+            main_app_bar.animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
 //            this.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }else{
             supportActionBar?.hide()
             main_app_bar.setExpanded(status)
+            main_app_bar.animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
 //            this.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
     }
@@ -74,7 +78,7 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
                 Permissions.PERMISSION_RATIONALE,
                 STORAGE_REQUEST_CODE,
                 READ_EXTERNAL_STORAGE,
-                READ_EXTERNAL_STORAGE
+                WRITE_EXTERNAL_STORAGE
             )
 //        }
 
@@ -115,8 +119,8 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
     private fun areStoragePermissionsGranted(): Boolean{
         return (!EasyPermissions.hasPermissions(
                 this,
-            Permissions.READ_EXTERNAL_STORAGE,
-            Permissions.READ_EXTERNAL_STORAGE
+            READ_EXTERNAL_STORAGE,
+            WRITE_EXTERNAL_STORAGE
             )
         )
     }

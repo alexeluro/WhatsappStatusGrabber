@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.VideoPlayerFragment"
+    android:background="@color/colorBlack"
     android:orientation="vertical">
 
 <!--    <VideoView-->
@@ -23,6 +24,9 @@
         android:layout_gravity="center"
         android:focusable="true"
         android:layout_weight="9"
+        app:surface_type="texture_view"
+        app:shutter_background_color="@color/colorBlack"
+        android:background="@color/colorBlack"
         />
 
     <RelativeLayout

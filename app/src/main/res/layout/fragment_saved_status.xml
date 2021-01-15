@@ -13,16 +13,16 @@
         tools:listitem="@layout/saved_status_layout"
         />
 
-<!--    <ProgressBar-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/saveded_status_progress_bar"-->
-<!--        android:layout_gravity="center" />-->
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/saved_status_progress_bar"
+        android:layout_gravity="center" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/status_available"
+        android:id="@+id/saved_status_available"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="20dp"

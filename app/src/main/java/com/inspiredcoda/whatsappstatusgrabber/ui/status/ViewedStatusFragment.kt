@@ -16,6 +16,8 @@ import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewedStatusAdapter
 import com.inspiredcoda.whatsappstatusgrabber.ui.VideoPlayerFragment
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.FileCategory.VIEWED_STATUS
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE_NAME
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_URI
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.OnStoragePermissionCallback
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusMediaInterface
@@ -77,7 +79,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 //            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
             file = File("$x/WhatsApp/Media/.Statuses")
 
-            mainViewModel.loadDirectoryFiles(file!!)
+            mainViewModel.loadDirectoryFiles(file!!, VIEWED_STATUS)
 
         }
 
@@ -113,7 +115,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
             }
         }
 
-        mainViewModel.directoryFiles.observe(requireParentFragment()) {
+        mainViewModel.directoryFiles.observe(this) {
             Log.d("ViewedStatusFragment", "MutableList<File> size: ${it.size}")
 
             if (!it.isNullOrEmpty()) {
@@ -144,7 +146,8 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 
     override fun onVideoFileSelected(file: File) {
         val bundle = bundleOf(
-            Pair<String, Uri>(VIDEO_URI, Uri.fromFile(file))
+            Pair<String, Uri>(VIDEO_URI, Uri.fromFile(file)),
+            Pair<String, String>(VIDEO_FILE_NAME, file.name)
         )
 
         findNavController().navigate(R.id.action_statusFragment_to_videoPlayerFragment, bundle)

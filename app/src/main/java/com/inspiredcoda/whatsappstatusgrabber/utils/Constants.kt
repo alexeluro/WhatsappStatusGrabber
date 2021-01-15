@@ -8,6 +8,10 @@ class Constants {
         LOADING, ERROR, SUCCESS
     }
 
+    object FileCategory{
+        const val VIEWED_STATUS = 0
+        const val SAVED_STATUS = 1
+    }
 
     object VideoConstant {
 
@@ -17,6 +21,9 @@ class Constants {
         )
 
         const val VIDEO_URI = "video_player"
+        const val VIDEO_FILE_NAME = "video_file_name"
+
+        const val INTENT_WSG_SHARE_MSSG = "whatsapp_status_grabber_mssg"
 
     }
 
