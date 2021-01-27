@@ -1,30 +1,25 @@
 package com.inspiredcoda.whatsappstatusgrabber.ui
 
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
-import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.telecom.InCallService
 import android.util.Log
 import android.view.*
-import androidx.core.net.toFile
-import androidx.core.util.TimeUtils
 import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE_NAME
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_URI
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoSource
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.*
-import java.text.SimpleDateFormat
+import java.nio.channels.FileChannel
 
 /**
  * A simple [Fragment] subclass.
@@ -33,8 +28,9 @@ import java.text.SimpleDateFormat
  */
 class VideoPlayerFragment : BaseFragment() {
 
-    private var videoUri: Uri? = null
-    private var videoName: String? = null
+//    private var videoUri: Uri? = null
+    private var videoSourceFile: File? = null
+    private var VIDEO_SOURCE: String? = null
     private var player: SimpleExoPlayer? = null
 
     override fun onCreateView(
@@ -49,36 +45,33 @@ class VideoPlayerFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            videoUri = it.get(VIDEO_URI) as Uri
-            videoName = it.getString(VIDEO_FILE_NAME)
+            videoSourceFile = it.get(VIDEO_FILE) as File
+            VIDEO_SOURCE = it.getString(Constants.VideoConstant.VIDEO_SOURCE)
         }
 
-//        val controller = MediaController(requireActivity())
-//        controller.setAnchorView(video_view)
+        when(VIDEO_SOURCE){
+            VideoSource.VIEWED_STATUS -> save_btn.visibility = View.VISIBLE
+
+            VideoSource.SAVED_STATUS -> save_btn.visibility = View.INVISIBLE
+        }
 
         setUpExoPlayer()
 //        player?.play()
 
         createWsgFolder()
 
-//        video_view.setVideoURI(videoUri!!)
-//        video_view.setMediaController(controller)
-//        video_view.requestFocus()
-//        video_view.start()
-//        video_view.keepScreenOn = true
 
         share_btn.setOnClickListener {
             player?.pause()
             val intent = Intent(ACTION_SEND)
-            intent.data = videoUri
+            intent.data = Uri.fromFile(videoSourceFile)
             intent.type = "video/*"
+            intent.`package` = "com.whatsapp"
             startActivity(createChooser(intent, "Send to"))
-//            it.context.toast("this will share this file")
         }
 
         save_btn.setOnClickListener {
-            saveFile(videoName!!)
-//            it.context.toast("Save file")
+            saveFile(videoSourceFile?.name!!)
         }
 
     }
@@ -86,7 +79,7 @@ class VideoPlayerFragment : BaseFragment() {
     private fun setUpExoPlayer(){
         player = SimpleExoPlayer.Builder(requireActivity()).build()
         video_view.player = player
-        player?.setMediaItem(MediaItem.fromUri(videoUri!!))
+        player?.setMediaItem(MediaItem.fromUri(Uri.fromFile(videoSourceFile)))
         player?.prepare()
         player?.repeatMode = Player.REPEAT_MODE_ONE
         player?.playWhenReady = true
@@ -101,9 +94,7 @@ class VideoPlayerFragment : BaseFragment() {
             defaultFolder = File(x, "WhatsApp Status Grabber")
         }
 
-        if (defaultFolder!!.exists()){
-            requireContext().toast("Folder already exist")
-        }else{
+        if (!defaultFolder!!.exists()){
             defaultFolder.mkdirs()
             if (defaultFolder.isDirectory){
                 requireContext().toast("Folder created successfully")
@@ -116,32 +107,34 @@ class VideoPlayerFragment : BaseFragment() {
 
     private fun saveFile(fileName: String){
         val rootPath = StorageUtil.getStorageDirectories(requireContext())
-        var wsgFolder: File? = null
-        var fos: FileOutputStream? = null
+        var destinationFile: File? = null
+
+        var destinationChannel: FileChannel? = null
+        var sourceChannel: FileChannel? = null
 
         for (x in rootPath) {
-            wsgFolder = File("$x/WhatsApp Status Grabber")
+            destinationFile = File("$x/WhatsApp Status Grabber")
         }
 
-
         try {
-            val file = File(wsgFolder, "WSG_${fileName}")
-            file.writeBytes(videoUri?.toFile()?.readBytes()!!)
-            fos = FileOutputStream(file)
-            fos.write(file.readBytes())
-//            fos = requireActivity().openFileOutput()
-//            fos.write(wsgFolder?.readBytes())
+            val file = File(destinationFile, fileName)
+
+            sourceChannel = FileInputStream(videoSourceFile).channel
+            destinationChannel = FileOutputStream(file).channel
+
+            destinationChannel?.transferFrom(sourceChannel, 0, sourceChannel.size())
 
         }catch (e: IOException){
-            this.context?.toast("Exception: \n${e.message!!}")
+            requireContext().toast("Exception: \n${e.message!!}")
         }finally {
-            val file = File(wsgFolder, "WSG_${fileName}")
+            val file = File(destinationFile, fileName)
             if (file.exists()){
                 requireContext().toast("saved successfully")
             }else{
                 requireContext().toast("failed to save!")
             }
-            fos?.close()
+            sourceChannel?.close()
+            destinationChannel?.close()
         }
     }
 

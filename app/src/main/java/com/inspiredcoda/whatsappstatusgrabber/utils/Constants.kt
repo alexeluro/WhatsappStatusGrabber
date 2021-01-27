@@ -20,11 +20,16 @@ class Constants {
             ".3gp", ".mpg", ".mkv", ".mov"
         )
 
-        const val VIDEO_URI = "video_player"
-        const val VIDEO_FILE_NAME = "video_file_name"
+        const val VIDEO_FILE = "video_player"
+        const val VIDEO_SOURCE = "whatsapp_status_grabber_source"
 
         const val INTENT_WSG_SHARE_MSSG = "whatsapp_status_grabber_mssg"
 
+    }
+
+    object VideoSource {
+        const val SAVED_STATUS = "saved_status"
+        const val VIEWED_STATUS = "viewed_status"
     }
 
     object Permissions{

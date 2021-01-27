@@ -12,17 +12,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.SavedStatusAdapter
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoSource
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusMediaInterface
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.fragment_saved_status.*
-import kotlinx.android.synthetic.main.fragment_viewed_status.*
 import java.io.File
 
 /**
@@ -132,8 +132,8 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
 
     override fun onVideoFileSelected(file: File) {
         val bundle = bundleOf(
-            Pair<String, Uri>(Constants.VideoConstant.VIDEO_URI, Uri.fromFile(file)),
-            Pair<String, String>(Constants.VideoConstant.VIDEO_FILE_NAME, file.name)
+            Pair(VideoConstant.VIDEO_FILE, file),
+            Pair<String, String>(VideoConstant.VIDEO_SOURCE, VideoSource.SAVED_STATUS)
         )
 
         findNavController().navigate(R.id.action_statusFragment_to_videoPlayerFragment, bundle)

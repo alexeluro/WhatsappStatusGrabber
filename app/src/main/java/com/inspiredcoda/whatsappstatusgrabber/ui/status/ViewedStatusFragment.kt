@@ -1,6 +1,5 @@
 package com.inspiredcoda.whatsappstatusgrabber.ui.status
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,8 +15,9 @@ import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewedStatusAdapter
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE_NAME
-import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_URI
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_SOURCE
+import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoSource
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.OnStoragePermissionCallback
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusMediaInterface
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
@@ -149,8 +149,8 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 
     override fun onVideoFileSelected(file: File) {
         val bundle = bundleOf(
-            Pair<String, Uri>(VIDEO_URI, Uri.fromFile(file)),
-            Pair<String, String>(VIDEO_FILE_NAME, file.name)
+            Pair(VIDEO_FILE, file),
+            Pair<String, String>(VIDEO_SOURCE, VideoSource.VIEWED_STATUS)
         )
 
         findNavController().navigate(R.id.action_statusFragment_to_videoPlayerFragment, bundle)
