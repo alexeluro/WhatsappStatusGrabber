@@ -211,9 +211,9 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.refresh -> {
-                initiateStatusSearch()
-            }
+//            R.id.refresh -> {
+//                initiateStatusSearch()
+//            }
 
             R.id.rate_us -> {
                 toast("still in progress...")
