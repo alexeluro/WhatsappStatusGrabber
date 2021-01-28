@@ -1,6 +1,5 @@
 package com.inspiredcoda.whatsappstatusgrabber.ui.status
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -55,6 +54,13 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
 
         initRecyclerView(mAdapter)
 
+        saved_status_swipe_refresh.let {
+            it.setOnRefreshListener {
+                refreshStatusDirectories()
+//                it.isRefreshing = false
+            }
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -66,13 +72,6 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
 
         val path = StorageUtil.getStorageDirectories(requireContext())
 
-//        for (x in path) {
-////            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
-//            file = File("$x/WhatsApp Status Grabber/")
-//
-//            mainViewModel.loadSavedStatuses(file!!)
-//
-//        }
 
     }
 

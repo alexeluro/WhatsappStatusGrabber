@@ -17,6 +17,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.READ_EXTERNAL_STORAGE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.STORAGE_REQUEST_CODE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions.WRITE_EXTERNAL_STORAGE
+import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.RefreshStatusDirectory
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.UserInterfaceListener
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
@@ -27,7 +28,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 
 class MainActivity : AppCompatActivity(), StatusGrabberInterface,
-    EasyPermissions.PermissionCallbacks, UserInterfaceListener {
+    EasyPermissions.PermissionCallbacks, UserInterfaceListener, RefreshStatusDirectory {
 
     lateinit var mainViewModel: MainViewModel
     private var permissions = mutableListOf(
@@ -224,5 +225,10 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun refreshStatusDirectories() {
+        initiateStatusSearch()
+    }
+
 
 }

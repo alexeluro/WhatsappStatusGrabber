@@ -54,7 +54,12 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-
+        viewed_status_swipe_refresh.let {
+            it.setOnRefreshListener {
+                refreshStatusDirectories()
+//                it.isRefreshing = false
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,6 +99,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
+                    viewed_status_swipe_refresh.isRefreshing = true
                     viewed_status_progress_bar.visibility = View.VISIBLE
                 }
 
@@ -103,11 +109,13 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
+                    viewed_status_swipe_refresh.isRefreshing = false
                     viewed_status_progress_bar.visibility = View.GONE
                 }
 
                 Constants.ResultState.ERROR.name -> {
                     requireContext().toast("ERROR...")
+                    viewed_status_swipe_refresh.isRefreshing = false
                     viewed_status_progress_bar.visibility = View.GONE
                 }
 
