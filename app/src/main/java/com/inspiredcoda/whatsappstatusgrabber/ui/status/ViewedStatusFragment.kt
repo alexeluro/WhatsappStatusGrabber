@@ -1,6 +1,7 @@
 package com.inspiredcoda.whatsappstatusgrabber.ui.status
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusMediaInterfa
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
+import kotlinx.android.synthetic.main.fragment_saved_status.*
 import kotlinx.android.synthetic.main.fragment_viewed_status.*
 import java.io.File
 
@@ -109,13 +111,25 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
-                    viewed_status_swipe_refresh.isRefreshing = false
+
+                    Handler().postDelayed({
+                        if (viewed_status_swipe_refresh.isRefreshing) {
+                            viewed_status_swipe_refresh.isRefreshing = false
+                        }
+                    }, 2000)
+
                     viewed_status_progress_bar.visibility = View.GONE
                 }
 
                 Constants.ResultState.ERROR.name -> {
                     requireContext().toast("ERROR...")
-                    viewed_status_swipe_refresh.isRefreshing = false
+
+                    Handler().postDelayed({
+                        if (viewed_status_swipe_refresh.isRefreshing) {
+                            viewed_status_swipe_refresh.isRefreshing = false
+                        }
+                    }, 2000)
+
                     viewed_status_progress_bar.visibility = View.GONE
                 }
 

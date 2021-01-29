@@ -1,6 +1,7 @@
 package com.inspiredcoda.whatsappstatusgrabber.ui.status
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.fragment_saved_status.*
+import kotlinx.coroutines.delay
 import java.io.File
 
 /**
@@ -57,8 +59,8 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
         saved_status_swipe_refresh.let {
             it.setOnRefreshListener {
                 refreshStatusDirectories()
-//                it.isRefreshing = false
             }
+
         }
 
     }
@@ -84,6 +86,8 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
+                    saved_status_swipe_refresh.isRefreshing = true
+
                     saved_status_progress_bar.visibility = View.VISIBLE
                 }
 
@@ -93,11 +97,25 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
                     )
+
+                    Handler().postDelayed({
+                        if (saved_status_swipe_refresh.isRefreshing) {
+                            saved_status_swipe_refresh.isRefreshing = false
+                        }
+                    }, 2000)
+
                     saved_status_progress_bar.visibility = View.GONE
                 }
 
                 Constants.ResultState.ERROR.name -> {
                     requireContext().toast("ERROR...")
+
+                    Handler().postDelayed({
+                        if (saved_status_swipe_refresh.isRefreshing) {
+                            saved_status_swipe_refresh.isRefreshing = false
+                        }
+                    }, 2000)
+
                     saved_status_progress_bar.visibility = View.GONE
                 }
 
