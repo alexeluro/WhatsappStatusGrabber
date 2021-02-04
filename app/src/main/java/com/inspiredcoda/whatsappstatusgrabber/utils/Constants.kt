@@ -39,5 +39,9 @@ class Constants {
         const val WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
     }
 
+    object Database{
+        const val DATABASE_NAME = "status_grabber_db"
+    }
+
 
 }

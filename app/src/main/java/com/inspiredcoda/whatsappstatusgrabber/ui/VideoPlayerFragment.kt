@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -16,6 +17,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoSource
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
+import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.*
@@ -33,6 +35,8 @@ class VideoPlayerFragment : BaseFragment() {
     private var VIDEO_SOURCE: String? = null
     private var player: SimpleExoPlayer? = null
 
+    private lateinit var mainViewModel: MainViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,6 +52,8 @@ class VideoPlayerFragment : BaseFragment() {
             videoSourceFile = it.get(VIDEO_FILE) as File
             VIDEO_SOURCE = it.getString(Constants.VideoConstant.VIDEO_SOURCE)
         }
+
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         when(VIDEO_SOURCE){
             VideoSource.VIEWED_STATUS -> save_btn.visibility = View.VISIBLE
@@ -107,35 +113,7 @@ class VideoPlayerFragment : BaseFragment() {
 
     private fun saveFile(fileName: String){
         val rootPath = StorageUtil.getStorageDirectories(requireContext())
-        var destinationFile: File? = null
-
-        var destinationChannel: FileChannel? = null
-        var sourceChannel: FileChannel? = null
-
-        for (x in rootPath) {
-            destinationFile = File("$x/WhatsApp Status Grabber")
-        }
-
-        try {
-            val file = File(destinationFile, fileName)
-
-            sourceChannel = FileInputStream(videoSourceFile).channel
-            destinationChannel = FileOutputStream(file).channel
-
-            destinationChannel?.transferFrom(sourceChannel, 0, sourceChannel.size())
-
-        }catch (e: IOException){
-            requireContext().toast("Exception: \n${e.message!!}")
-        }finally {
-            val file = File(destinationFile, fileName)
-            if (file.exists()){
-                requireContext().toast("saved successfully")
-            }else{
-                requireContext().toast("failed to save!")
-            }
-            sourceChannel?.close()
-            destinationChannel?.close()
-        }
+        mainViewModel.saveStatus(fileName, rootPath, videoSourceFile!!)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

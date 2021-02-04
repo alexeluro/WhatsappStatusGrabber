@@ -91,4 +91,8 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-dash:$exo_version"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exo_version"
 
+    // Stetho
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
 }

@@ -99,8 +99,10 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                     )
 
                     Handler().postDelayed({
-                        if (saved_status_swipe_refresh.isRefreshing) {
-                            saved_status_swipe_refresh.isRefreshing = false
+                        if (saved_status_swipe_refresh != null) {
+                            if (saved_status_swipe_refresh.isRefreshing) {
+                                saved_status_swipe_refresh.isRefreshing = false
+                            }
                         }
                     }, 2000)
 

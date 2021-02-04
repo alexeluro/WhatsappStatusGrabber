@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.inspiredcoda.whatsappstatusgrabber.data.MainRepository
+import com.inspiredcoda.whatsappstatusgrabber.data.database.AppDatabase
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.OnStoragePermissionCallback
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.StatusGrabberInterface
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.Permissions
@@ -21,6 +23,7 @@ import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.RefreshStatusDirec
 import com.inspiredcoda.whatsappstatusgrabber.utils.callbacks.UserInterfaceListener
 import com.inspiredcoda.whatsappstatusgrabber.utils.toast
 import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModel
+import com.inspiredcoda.whatsappstatusgrabber.viewmodel.MainViewModelFactory
 import hendrawd.storageutil.library.StorageUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -54,7 +57,9 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
 
         createAboutDialog()
 
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        val mainViewModelFactory = MainViewModelFactory(MainRepository(AppDatabase.getInstance(this).getStatusDao()))
+
+        mainViewModel = ViewModelProvider(this, mainViewModelFactory).get(MainViewModel::class.java)
 
         initiateStatusSearch()
 //        requestStoragePermission()

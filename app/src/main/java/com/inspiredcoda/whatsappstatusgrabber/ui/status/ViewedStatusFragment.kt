@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.inspiredcoda.whatsappstatusgrabber.BaseFragment
 import com.inspiredcoda.whatsappstatusgrabber.R
 import com.inspiredcoda.whatsappstatusgrabber.adapter.ViewedStatusAdapter
+import com.inspiredcoda.whatsappstatusgrabber.data.entity.Status
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_FILE
 import com.inspiredcoda.whatsappstatusgrabber.utils.Constants.VideoConstant.VIDEO_SOURCE
@@ -41,6 +42,8 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
     lateinit var mAdapter: ViewedStatusAdapter
 
     private var file: File? = null
+
+    private var referenceList = mutableListOf<Status>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -113,8 +116,10 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                     )
 
                     Handler().postDelayed({
-                        if (viewed_status_swipe_refresh.isRefreshing) {
-                            viewed_status_swipe_refresh.isRefreshing = false
+                        if (viewed_status_swipe_refresh != null) {
+                            if (viewed_status_swipe_refresh.isRefreshing) {
+                                viewed_status_swipe_refresh.isRefreshing = false
+                            }
                         }
                     }, 2000)
 
@@ -142,7 +147,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
             if (!it.isNullOrEmpty()) {
                 status_available.visibility = View.GONE
 
-                mAdapter.addToList(it)
+                mAdapter.addToList(it, mainViewModel.oldViewedStatusList?.toList())
 
             } else {
                 status_available.visibility = View.VISIBLE
@@ -170,6 +175,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
     }
 
     override fun onVideoFileSelected(file: File) {
+        mainViewModel.saveStatusDetailToDb(Status(file.name, file.name, false))
         val bundle = bundleOf(
             Pair(VIDEO_FILE, file),
             Pair<String, String>(VIDEO_SOURCE, VideoSource.VIEWED_STATUS)
