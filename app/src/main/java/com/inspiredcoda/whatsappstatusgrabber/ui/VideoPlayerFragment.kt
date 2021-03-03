@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.MediaItem
@@ -30,7 +31,7 @@ import java.nio.channels.FileChannel
  */
 class VideoPlayerFragment : BaseFragment() {
 
-//    private var videoUri: Uri? = null
+    //    private var videoUri: Uri? = null
     private var videoSourceFile: File? = null
     private var VIDEO_SOURCE: String? = null
     private var player: SimpleExoPlayer? = null
@@ -55,24 +56,27 @@ class VideoPlayerFragment : BaseFragment() {
 
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        when(VIDEO_SOURCE){
+        when (VIDEO_SOURCE) {
             VideoSource.VIEWED_STATUS -> save_btn.visibility = View.VISIBLE
 
             VideoSource.SAVED_STATUS -> save_btn.visibility = View.INVISIBLE
         }
 
         setUpExoPlayer()
-//        player?.play()
 
         createWsgFolder()
 
 
-        share_btn.setOnClickListener {
+        share_btn.setOnClickListener { it ->
             player?.pause()
-            val intent = Intent(ACTION_SEND)
-            intent.data = Uri.fromFile(videoSourceFile)
-            intent.type = "video/*"
-            intent.`package` = "com.whatsapp"
+            val intent = Intent(ACTION_SEND).also {
+                it.data = FileProvider.getUriForFile(requireContext(), "//com.whatsapp//.fileProvider",videoSourceFile!!)
+                it.type = "video/*"
+//                it.`package` = "com.whatsapp"
+                it.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+//                it.putExtra(EXTRA_TEXT, "This file is shared from WhatsApp Status Grabber")
+            }
+
             startActivity(createChooser(intent, "Send to"))
         }
 
@@ -82,7 +86,7 @@ class VideoPlayerFragment : BaseFragment() {
 
     }
 
-    private fun setUpExoPlayer(){
+    private fun setUpExoPlayer() {
         player = SimpleExoPlayer.Builder(requireActivity()).build()
         video_view.player = player
         player?.setMediaItem(MediaItem.fromUri(Uri.fromFile(videoSourceFile)))
@@ -91,27 +95,27 @@ class VideoPlayerFragment : BaseFragment() {
         player?.playWhenReady = true
     }
 
-    private fun createWsgFolder(){
+    private fun createWsgFolder() {
         val rootPath = StorageUtil.getStorageDirectories(requireContext())
         var defaultFolder: File? = null
 
-        for(x in rootPath){
+        for (x in rootPath) {
             Log.d("VideoPlayerFragment", "createWsgFolder: $x")
             defaultFolder = File(x, "WhatsApp Status Grabber")
         }
 
-        if (!defaultFolder!!.exists()){
+        if (!defaultFolder!!.exists()) {
             defaultFolder.mkdirs()
-            if (defaultFolder.isDirectory){
+            if (defaultFolder.isDirectory) {
                 requireContext().toast("Folder created successfully")
-            }else{
+            } else {
                 requireContext().toast("Failed to create Folder")
             }
         }
 
     }
 
-    private fun saveFile(fileName: String){
+    private fun saveFile(fileName: String) {
         val rootPath = StorageUtil.getStorageDirectories(requireContext())
         mainViewModel.saveStatus(fileName, rootPath, videoSourceFile!!)
     }
@@ -123,15 +127,29 @@ class VideoPlayerFragment : BaseFragment() {
 
     }
 
+    private fun pausePlayer(){
+        player?.let{
+            it.playWhenReady = false
+            it.playbackState
+        }
+    }
+
+    private fun resumePlayer(){
+        player?.let{
+            it.playWhenReady = true
+            it.playbackState
+        }
+    }
+
     override fun onPause() {
-//        player?.release()
-//        player = null
+        pausePlayer()
         video_view.onPause()
         super.onPause()
     }
 
     override fun onResume() {
         video_view.onResume()
+        resumePlayer()
         super.onResume()
     }
 

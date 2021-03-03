@@ -23,7 +23,7 @@
             app:titleTextColor="@color/colorWhite"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            style="@style/StatusGrabberToolBarTheme"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
             android:background="@color/colorPrimaryDark"
             />
 

@@ -175,6 +175,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
     }
 
     override fun onVideoFileSelected(file: File) {
+        mAdapter.notifyDataSetChanged()
         mainViewModel.saveStatusDetailToDb(Status(file.name, file.name, false))
         val bundle = bundleOf(
             Pair(VIDEO_FILE, file),

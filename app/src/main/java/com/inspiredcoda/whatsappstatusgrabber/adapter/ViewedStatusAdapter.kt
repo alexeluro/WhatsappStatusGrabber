@@ -49,7 +49,6 @@ class ViewedStatusAdapter(
 //        }
 
         holder.fileContainer.setOnClickListener {
-            holder.fileImg.context.toast("You clicked ${files[position].name}")
 //            referenceList?.get(position)?.isNewStatus = false
             mediaInterface.onVideoFileSelected(files[position])
         }

@@ -177,7 +177,7 @@ class MainViewModel(
                 if (file.exists()) {
                     _loadingState.postValue(
                         ResultState(
-                            Constants.ResultState.ERROR.name,
+                            Constants.ResultState.SUCCESS.name,
                             "saved successfully"
                         )
                     )
@@ -188,7 +188,7 @@ class MainViewModel(
                     _loadingState.postValue(
                         ResultState(
                             Constants.ResultState.ERROR.name,
-                            "saved successfully"
+                            "Failed to save"
                         )
                     )
                 }
