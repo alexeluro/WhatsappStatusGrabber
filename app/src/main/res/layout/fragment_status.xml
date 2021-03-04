@@ -18,8 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimaryDark"
-            app:tabIndicator="@android:color/transparent"
+            app:tabIndicatorColor="@color/colorWhite"
             app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="2dp"
             app:tabTextColor="@color/colorWhite">
 
         </com.google.android.material.tabs.TabLayout>
