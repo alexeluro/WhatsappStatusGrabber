@@ -62,9 +62,13 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
         viewed_status_swipe_refresh.let {
             it.setOnRefreshListener {
                 refreshStatusDirectories()
-//                it.isRefreshing = false
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshStatusDirectories()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -82,24 +86,13 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
 
         observers()
 
-        val path = StorageUtil.getStorageDirectories(requireContext())
-
-//        for (x in path) {
-////            file = File("/storage/emulated/0/WhatsApp/Media/.Statuses")
-//            file = File("$x/WhatsApp/Media/.Statuses")
-//
-//            mainViewModel.loadViewedStatuses(file!!)
-//
-//        }
-
-
     }
 
     private fun observers() {
         mainViewModel.loadingState.observe(viewLifecycleOwner) { state ->
             when (state.result) {
                 Constants.ResultState.LOADING.name -> {
-                    requireContext().toast("LOADING...")
+//                    requireContext().toast("LOADING...")
                     Log.d(
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
@@ -109,7 +102,7 @@ class ViewedStatusFragment : BaseFragment(), OnStoragePermissionCallback, Status
                 }
 
                 Constants.ResultState.SUCCESS.name -> {
-                    requireContext().toast("SUCCESS...\n${state.message}")
+//                    requireContext().toast("SUCCESS...\n${state.message}")
                     Log.d(
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"

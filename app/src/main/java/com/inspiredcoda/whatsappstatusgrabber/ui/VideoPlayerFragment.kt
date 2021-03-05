@@ -70,7 +70,8 @@ class VideoPlayerFragment : BaseFragment() {
         share_btn.setOnClickListener { it ->
             player?.pause()
             val intent = Intent(ACTION_SEND).also {
-                it.data = FileProvider.getUriForFile(requireContext(), "//com.whatsapp//.fileProvider",videoSourceFile!!)
+//                it.data = FileProvider.getUriForFile(requireContext(), "//com.whatsapp//.fileProvider",videoSourceFile!!)
+                it.data = Uri.fromFile(videoSourceFile!!)
                 it.type = "video/*"
 //                it.`package` = "com.whatsapp"
                 it.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
@@ -116,6 +117,7 @@ class VideoPlayerFragment : BaseFragment() {
     }
 
     private fun saveFile(fileName: String) {
+        requireContext().toast("Saved Successfully")
         val rootPath = StorageUtil.getStorageDirectories(requireContext())
         mainViewModel.saveStatus(fileName, rootPath, videoSourceFile!!)
     }

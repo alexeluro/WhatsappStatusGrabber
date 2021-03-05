@@ -90,7 +90,7 @@ class MainViewModel(
 
                 _loadingState.value = ResultState(
                     Constants.ResultState.SUCCESS.name,
-                    "Total files found in ${directory.canonicalPath}: ${listOfViewedStatuses.size}"
+                    "Total statuses found: ${listOfViewedStatuses.size}"
                 )
                 _directoryViewedStatusFiles.postValue(listOfViewedStatuses)
             } else {
@@ -130,7 +130,7 @@ class MainViewModel(
 
             _loadingState.value = ResultState(
                 Constants.ResultState.SUCCESS.name,
-                "Total files found in ${directory.canonicalPath}: ${listOfSavedStatuses.size}"
+                "Total saved statuses found: ${listOfSavedStatuses.size}"
             )
             _directorySavedStatusFiles.postValue(listOfSavedStatuses)
         } else {

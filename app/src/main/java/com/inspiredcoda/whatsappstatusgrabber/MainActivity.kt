@@ -50,10 +50,10 @@ class MainActivity : AppCompatActivity(), StatusGrabberInterface,
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navController = navHostFragment.navController
-        toolbar.setupWithNavController(navController, AppBarConfiguration(
-            navController.graph,
-            null
-        ))
+//        toolbar.setupWithNavController(navController, AppBarConfiguration(
+//            navController.graph,
+//            null
+//        ))
 
         createAboutDialog()
 

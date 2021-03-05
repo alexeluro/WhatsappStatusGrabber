@@ -81,7 +81,7 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
         mainViewModel.loadingState.observe(viewLifecycleOwner) { state ->
             when (state.result) {
                 Constants.ResultState.LOADING.name -> {
-                    requireContext().toast("LOADING...")
+//                    requireContext().toast("LOADING...")
                     Log.d(
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
@@ -92,7 +92,7 @@ class SavedStatusFragment : BaseFragment(), StatusMediaInterface {
                 }
 
                 Constants.ResultState.SUCCESS.name -> {
-                    requireContext().toast("SUCCESS...\n${state.message}")
+//                    requireContext().toast("SUCCESS...\n${state.message}")
                     Log.d(
                         "ViewedStatusFragment", "File Path: ${file?.absolutePath}\nTotal files found: " +
                                 "${state.message}"
